@@ -1,18 +1,9 @@
 """
-EduLink — Backend Developer 1
+EduLink — Backend
 Servidor Flask principal. Puerto: 5000.
-
-Estado de dependencias externas:
-  - database.py : VACÍO — se usan mocks internos (ver sección MOCKS).
-  - validator.py : VACÍO — validación implementada localmente (ver sección VALIDACIÓN).
-
-Cuando el DB Developer entregue database.py, reemplaza las funciones marcadas
-con "# TODO: reemplazar mock" por los imports reales.
 """
 
 import logging
-import sqlite3
-from datetime import datetime
 from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 import os
@@ -36,78 +27,11 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 # ---------------------------------------------------------------------------
-# MOCKS TEMPORALES
-# Sustituir por imports de database.py cuando ese archivo esté implementado.
-#
-#   from database import init_db, get_all_solicitudes, insert_solicitud
-#
+# Imports de módulos del proyecto
 # ---------------------------------------------------------------------------
 
-_mock_store: list[dict] = []          # almacén en memoria (sin persistencia)
-_mock_next_id: int = 1
-
-
-def _mock_init_db() -> None:
-    """TODO: reemplazar mock — llamar a database.init_db() en su lugar."""
-    logger.info("MOCK: base de datos en memoria inicializada.")
-
-
-def _mock_get_all_solicitudes() -> list[dict]:
-    """TODO: reemplazar mock — llamar a database.get_all_solicitudes()."""
-    return list(_mock_store)
-
-
-def _mock_insert_solicitud(nombre: str, carrera: str, materia: str, descripcion: str) -> dict:
-    """TODO: reemplazar mock — llamar a database.insert_solicitud(...)."""
-    global _mock_next_id
-    nueva = {
-        "id": _mock_next_id,
-        "nombre": nombre,
-        "carrera": carrera,
-        "materia": materia,
-        "descripcion": descripcion,
-        "fecha_creacion": datetime.now().strftime("%Y-%m-%dT%H:%M:%S"),
-    }
-    _mock_store.append(nueva)
-    _mock_next_id += 1
-    logger.info("MOCK: solicitud insertada con id=%s", nueva["id"])
-    return nueva
-
-
-# Alias activos — cambiar a los de database.py cuando estén disponibles
-init_db             = _mock_init_db
-get_all_solicitudes = _mock_get_all_solicitudes
-insert_solicitud    = _mock_insert_solicitud
-
-# ---------------------------------------------------------------------------
-# VALIDACIÓN
-# Cuando validator.py esté implementado, reemplazar _validate_solicitud
-# por: from validator import validate_solicitud
-# ---------------------------------------------------------------------------
-
-CARRERAS_VALIDAS = {"IE", "IM", "IS", "IME"}
-
-def _validate_solicitud(data: dict) -> str | None:
-    """
-    Valida los campos del contrato (bob_context.md).
-    Devuelve un mensaje de error (str) si hay problema, o None si todo está bien.
-    TODO: reemplazar por validator.validate_solicitud(data) cuando esté listo.
-    """
-    campos = {
-        "nombre":      50,
-        "carrera":     None,
-        "materia":     100,
-        "descripcion": 500,
-    }
-    for campo, max_len in campos.items():
-        valor = data.get(campo, "").strip() if isinstance(data.get(campo), str) else ""
-        if not valor:
-            return f"El campo '{campo}' es obligatorio."
-        if max_len and len(valor) > max_len:
-            return f"El campo '{campo}' no puede superar {max_len} caracteres."
-    if data.get("carrera") not in CARRERAS_VALIDAS:
-        return "El campo 'carrera' debe ser uno de: IE, IM, IS, IME."
-    return None
+from database import init_db, insertar_solicitud, obtener_solicitudes
+from validator import validate_solicitud
 
 # ---------------------------------------------------------------------------
 # Rutas — Frontend
@@ -123,10 +47,10 @@ def index():
 # ---------------------------------------------------------------------------
 
 @app.route('/api/solicitudes', methods=['GET'])
-def obtener_solicitudes():
+def get_solicitudes():
     """Devuelve todas las solicitudes almacenadas."""
     try:
-        solicitudes = get_all_solicitudes()
+        solicitudes = obtener_solicitudes()
         return jsonify({"solicitudes": solicitudes}), 200
     except Exception:
         logger.exception("Error al obtener solicitudes")
@@ -140,18 +64,18 @@ def crear_solicitud():
     if data is None:
         return jsonify({"error": "El cuerpo de la petición debe ser JSON válido."}), 400
 
-    error = _validate_solicitud(data)
+    error = validate_solicitud(data)
     if error:
         return jsonify({"error": error}), 400
 
     try:
-        nueva = insert_solicitud(
+        nuevo_id = insertar_solicitud(
             nombre=data["nombre"].strip(),
             carrera=data["carrera"].strip(),
             materia=data["materia"].strip(),
             descripcion=data["descripcion"].strip(),
         )
-        return jsonify(nueva), 201
+        return jsonify({"mensaje": "Solicitud creada exitosamente.", "id": nuevo_id}), 201
     except Exception:
         logger.exception("Error al insertar solicitud")
         return jsonify({"error": "No se pudo registrar la solicitud."}), 500
@@ -164,4 +88,4 @@ def crear_solicitud():
 if __name__ == '__main__':
     init_db()
     logger.info("Servidor EduLink iniciando en http://localhost:5000")
-    app.run(host='localhost', port=5000, debug=False)
+    app.run(host='0.0.0.0', port=5000, debug=False)
