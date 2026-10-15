@@ -24,7 +24,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FRONTEND_DIR = os.path.join(BASE_DIR, '..', 'frontend')
 
-app = Flask(__name__, static_folder=FRONTEND_DIR)
+app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path='')
 
 # CORS restringido a localhost (seguridad acordada en bob_context.md)
 CORS(app, origins=['http://localhost:5000', 'http://127.0.0.1:5000'])
