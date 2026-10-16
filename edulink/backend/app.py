@@ -1,4 +1,5 @@
 """
+<<<<<<< Updated upstream
 EduLink — Backend Developer 1
 Servidor Flask principal. Puerto: 5000.
 
@@ -8,6 +9,10 @@ Estado de dependencias externas:
 
 Cuando el DB Developer entregue database.py, reemplaza las funciones marcadas
 con "# TODO: reemplazar mock" por los imports reales.
+=======
+EduLink — Backend v0.2
+Nuevos endpoints: respuestas + marcar resuelta.
+>>>>>>> Stashed changes
 """
 
 import logging
@@ -17,24 +22,22 @@ from flask import Flask, jsonify, request, send_from_directory
 from flask_cors import CORS
 import os
 
-# ---------------------------------------------------------------------------
-# Configuración de la aplicación
-# ---------------------------------------------------------------------------
-
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+BASE_DIR     = os.path.dirname(os.path.abspath(__file__))
 FRONTEND_DIR = os.path.join(BASE_DIR, '..', 'frontend')
 
+<<<<<<< Updated upstream
 app = Flask(__name__, static_folder=FRONTEND_DIR)
 
 # CORS restringido a localhost (seguridad acordada en bob_context.md)
+=======
+app = Flask(__name__, static_folder=FRONTEND_DIR, static_url_path='')
+>>>>>>> Stashed changes
 CORS(app, origins=['http://localhost:5000', 'http://127.0.0.1:5000'])
 
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s [%(levelname)s] %(message)s'
-)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s [%(levelname)s] %(message)s')
 logger = logging.getLogger(__name__)
 
+<<<<<<< Updated upstream
 # ---------------------------------------------------------------------------
 # MOCKS TEMPORALES
 # Sustituir por imports de database.py cuando ese archivo esté implementado.
@@ -108,26 +111,32 @@ def _validate_solicitud(data: dict) -> str | None:
     if data.get("carrera") not in CARRERAS_VALIDAS:
         return "El campo 'carrera' debe ser uno de: IE, IM, IS, IME."
     return None
+=======
+from database import init_db, insertar_solicitud, obtener_solicitudes, \
+                     marcar_resuelta, insertar_respuesta, obtener_respuestas
+from validator import validate_solicitud
+>>>>>>> Stashed changes
 
-# ---------------------------------------------------------------------------
-# Rutas — Frontend
-# ---------------------------------------------------------------------------
+# ── Frontend ───────────────────────────────────────────────
 
 @app.route('/')
 def index():
-    """Sirve index.html desde la carpeta frontend."""
     return send_from_directory(FRONTEND_DIR, 'index.html')
 
-# ---------------------------------------------------------------------------
-# Rutas — API
-# ---------------------------------------------------------------------------
+# ── Solicitudes ────────────────────────────────────────────
 
 @app.route('/api/solicitudes', methods=['GET'])
+<<<<<<< Updated upstream
 def obtener_solicitudes():
     """Devuelve todas las solicitudes almacenadas."""
     try:
         solicitudes = get_all_solicitudes()
         return jsonify({"solicitudes": solicitudes}), 200
+=======
+def get_solicitudes():
+    try:
+        return jsonify({"solicitudes": obtener_solicitudes()}), 200
+>>>>>>> Stashed changes
     except Exception:
         logger.exception("Error al obtener solicitudes")
         return jsonify({"error": "No se pudieron obtener las solicitudes."}), 500
@@ -135,21 +144,30 @@ def obtener_solicitudes():
 
 @app.route('/api/solicitudes', methods=['POST'])
 def crear_solicitud():
-    """Crea una nueva solicitud tras validar los campos obligatorios."""
     data = request.get_json(silent=True)
     if data is None:
+<<<<<<< Updated upstream
         return jsonify({"error": "El cuerpo de la petición debe ser JSON válido."}), 400
 
     error = _validate_solicitud(data)
+=======
+        return jsonify({"error": "El cuerpo debe ser JSON válido."}), 400
+    error = validate_solicitud(data)
+>>>>>>> Stashed changes
     if error:
         return jsonify({"error": error}), 400
-
     try:
+<<<<<<< Updated upstream
         nueva = insert_solicitud(
             nombre=data["nombre"].strip(),
             carrera=data["carrera"].strip(),
             materia=data["materia"].strip(),
             descripcion=data["descripcion"].strip(),
+=======
+        nuevo_id = insertar_solicitud(
+            data["nombre"].strip(), data["carrera"].strip(),
+            data["materia"].strip(), data["descripcion"].strip(),
+>>>>>>> Stashed changes
         )
         return jsonify(nueva), 201
     except Exception:
@@ -157,11 +175,54 @@ def crear_solicitud():
         return jsonify({"error": "No se pudo registrar la solicitud."}), 500
 
 
-# ---------------------------------------------------------------------------
-# Arranque
-# ---------------------------------------------------------------------------
+@app.route('/api/solicitudes/<int:sid>/resolver', methods=['POST'])
+def resolver_solicitud(sid):
+    """Marca la solicitud como resuelta."""
+    if marcar_resuelta(sid):
+        return jsonify({"mensaje": "Solicitud marcada como resuelta."}), 200
+    return jsonify({"error": "Solicitud no encontrada."}), 404
+
+# ── Respuestas ─────────────────────────────────────────────
+
+@app.route('/api/solicitudes/<int:sid>/respuestas', methods=['GET'])
+def get_respuestas(sid):
+    try:
+        return jsonify({"respuestas": obtener_respuestas(sid)}), 200
+    except Exception:
+        logger.exception("Error al obtener respuestas")
+        return jsonify({"error": "No se pudieron obtener las respuestas."}), 500
+
+
+@app.route('/api/solicitudes/<int:sid>/respuestas', methods=['POST'])
+def crear_respuesta(sid):
+    data = request.get_json(silent=True)
+    if not data:
+        return jsonify({"error": "El cuerpo debe ser JSON válido."}), 400
+    nombre = (data.get("nombre") or "").strip()
+    texto  = (data.get("texto")  or "").strip()
+    if not nombre:
+        return jsonify({"error": "El campo 'nombre' es obligatorio."}), 400
+    if not texto:
+        return jsonify({"error": "El campo 'texto' es obligatorio."}), 400
+    if len(nombre) > 50:
+        return jsonify({"error": "'nombre' máx. 50 caracteres."}), 400
+    if len(texto) > 500:
+        return jsonify({"error": "'texto' máx. 500 caracteres."}), 400
+    try:
+        rid = insertar_respuesta(sid, nombre, texto)
+        return jsonify({"mensaje": "Respuesta publicada.", "id": rid}), 201
+    except Exception:
+        logger.exception("Error al insertar respuesta")
+        return jsonify({"error": "No se pudo registrar la respuesta."}), 500
+
+# ── Arranque ───────────────────────────────────────────────
 
 if __name__ == '__main__':
     init_db()
+<<<<<<< Updated upstream
     logger.info("Servidor EduLink iniciando en http://localhost:5000")
     app.run(host='localhost', port=5000, debug=False)
+=======
+    logger.info("Servidor EduLink v0.2 en http://localhost:5000")
+    app.run(host='0.0.0.0', port=5000, debug=False)
+>>>>>>> Stashed changes
