@@ -4,53 +4,58 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>EduLink — Apoyo Estudiantil</title>
-
-  <!-- Google Fonts: Sora (títulos) + Inter (cuerpo) + JetBrains Mono (badges) -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap"
-    rel="stylesheet"
-  />
-
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-  <!-- ══════════════════════════════════════
-       HEADER
-  ══════════════════════════════════════ -->
+  <!-- HEADER -->
   <header class="site-header">
     <div class="container header-inner">
-      <a href="#inicio" class="logo" aria-label="EduLink inicio">
-        <span class="logo-icon" aria-hidden="true">🎓</span>
+      <a href="#" class="logo" aria-label="EduLink inicio">
+        <span class="logo-icon" aria-hidden="true">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/><path d="M6 12v5c3.333 1.333 6.667 1.333 10 0v-5"/></svg>
+        </span>
         <span class="logo-text">EduLink</span>
+        <span class="logo-badge">Beta</span>
       </a>
       <nav class="site-nav" aria-label="Navegación principal">
-        <a href="#solicitar">Pedir ayuda</a>
-        <a href="#lista">Ver solicitudes</a>
+        <a href="#foro" class="nav-link">Foro</a>
+        <a href="#nueva-solicitud" class="nav-link nav-cta">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+          Nueva solicitud
+        </a>
       </nav>
     </div>
   </header>
 
   <main>
 
-    <!-- ══════════════════════════════════════
-         SECCIÓN HERO / INICIO
-    ══════════════════════════════════════ -->
-    <section id="inicio" class="hero" aria-labelledby="hero-title">
-      <div class="container hero-content">
-        <p class="hero-eyebrow animate-fade-up">Espacio de apoyo estudiantil</p>
-        <h1 id="hero-title" class="animate-fade-up delay-1">
-          Aprende más<br />con tus compañeros
-        </h1>
-        <p class="hero-sub animate-fade-up delay-2">
-          Publica tu duda, encuentra a quien ya superó ese tema y resuelve
-          juntos. Sin grupos de chat caóticos.
-        </p>
-        <a href="#solicitar" class="btn btn-hero animate-fade-up delay-3">
-          Publicar solicitud
-        </a>
+    <!-- HERO compacto con stats -->
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="container hero-inner">
+        <div class="hero-text">
+          <p class="hero-eyebrow animate-fade-up">Red de apoyo académico · Ingeniería</p>
+          <h1 id="hero-title" class="animate-fade-up delay-1">Tu duda tiene respuesta<br/>aquí adentro.</h1>
+          <p class="hero-sub animate-fade-up delay-2">Publica lo que no entiendes. Responde lo que ya sabes. Sin grupos de WhatsApp caóticos.</p>
+          <a href="#nueva-solicitud" class="btn btn-hero animate-fade-up delay-3">Publicar mi duda</a>
+        </div>
+        <div class="hero-stats animate-fade-up delay-2" aria-label="Estadísticas">
+          <div class="stat-card">
+            <span class="stat-num" id="stat-total">—</span>
+            <span class="stat-label">Solicitudes totales</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num" id="stat-abiertas">—</span>
+            <span class="stat-label">Sin resolver</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-num" id="stat-resueltas">—</span>
+            <span class="stat-label">Resueltas</span>
+          </div>
+        </div>
       </div>
       <div class="hero-decoration" aria-hidden="true">
         <div class="blob blob-1"></div>
@@ -58,128 +63,113 @@
       </div>
     </section>
 
-    <!-- ══════════════════════════════════════
-         SECCIÓN FORMULARIO
-    ══════════════════════════════════════ -->
-    <section id="solicitar" class="section-form" aria-labelledby="form-title">
-      <div class="container">
-        <h2 id="form-title" class="section-title">Nueva solicitud de apoyo</h2>
-        <p class="section-sub">Completa los campos y publica tu duda para que tus compañeros puedan ayudarte.</p>
+    <!-- LAYOUT PRINCIPAL: foro (izq) + formulario (der) -->
+    <div class="main-layout container">
 
-        <form id="form-solicitud" novalidate>
+      <!-- ══ COLUMNA IZQUIERDA — FORO ══ -->
+      <section id="foro" class="col-foro" aria-labelledby="foro-title">
 
-          <!-- Nombre -->
-          <div class="field-group">
-            <label for="nombre" class="field-label">Nombre <span class="required" aria-hidden="true">*</span></label>
-            <input
-              type="text"
-              id="nombre"
-              name="nombre"
-              class="field-input"
-              maxlength="50"
-              placeholder="Tu nombre"
-              autocomplete="given-name"
-              required
-              aria-required="true"
-              aria-describedby="nombre-error"
-            />
-            <span class="field-error" id="nombre-error" role="alert" aria-live="polite"></span>
+        <!-- Buscador + filtros -->
+        <div class="foro-toolbar">
+          <div class="search-wrap">
+            <span class="search-icon" aria-hidden="true">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            </span>
+            <input type="search" id="buscador" class="search-input" placeholder="Buscar por materia o descripción…" aria-label="Buscar solicitudes" />
           </div>
-
-          <!-- Carrera -->
-          <div class="field-group">
-            <label for="carrera" class="field-label">Carrera <span class="required" aria-hidden="true">*</span></label>
-            <select
-              id="carrera"
-              name="carrera"
-              class="field-input field-select"
-              required
-              aria-required="true"
-              aria-describedby="carrera-error"
-            >
-              <option value="" disabled selected>Selecciona tu carrera</option>
-              <option value="IE">Ingeniería Eléctrica (IE)</option>
-              <option value="IM">Ingeniería Mecatrónica (IM)</option>
-              <option value="IS">Ingeniería de Software (IS)</option>
-              <option value="IME">Ingeniería Mecánica Eléctrica (IME)</option>
-            </select>
-            <span class="field-error" id="carrera-error" role="alert" aria-live="polite"></span>
+          <div class="filtro-bar" role="group" aria-label="Filtrar por carrera">
+            <button class="filtro-btn active" data-carrera="">Todas</button>
+            <button class="filtro-btn" data-carrera="IE">IE</button>
+            <button class="filtro-btn" data-carrera="IM">IM</button>
+            <button class="filtro-btn" data-carrera="IS">IS</button>
+            <button class="filtro-btn" data-carrera="IME">IME</button>
           </div>
+        </div>
 
-          <!-- Materia -->
-          <div class="field-group">
-            <label for="materia" class="field-label">Materia <span class="required" aria-hidden="true">*</span></label>
-            <input
-              type="text"
-              id="materia"
-              name="materia"
-              class="field-input"
-              maxlength="100"
-              placeholder="Ej. Cálculo Diferencial"
-              required
-              aria-required="true"
-              aria-describedby="materia-error"
-            />
-            <span class="field-error" id="materia-error" role="alert" aria-live="polite"></span>
-          </div>
+        <h2 id="foro-title" class="section-title">Solicitudes recientes</h2>
 
-          <!-- Descripción -->
-          <div class="field-group">
-            <label for="descripcion" class="field-label">Descripción <span class="required" aria-hidden="true">*</span></label>
-            <textarea
-              id="descripcion"
-              name="descripcion"
-              class="field-input field-textarea"
-              maxlength="500"
-              rows="4"
-              placeholder="Describe brevemente en qué necesitas ayuda…"
-              required
-              aria-required="true"
-              aria-describedby="descripcion-error descripcion-counter"
-            ></textarea>
-            <div class="field-footer">
-              <span class="field-error" id="descripcion-error" role="alert" aria-live="polite"></span>
-              <span class="char-counter" id="descripcion-counter" aria-live="polite">0 / 500</span>
-            </div>
-          </div>
-
-          <!-- Feedback global -->
-          <div id="form-feedback" class="form-feedback" role="alert" aria-live="polite"></div>
-
-          <!-- Botón -->
-          <button type="submit" id="btn-enviar" class="btn btn-submit">
-            <span class="btn-text">Publicar solicitud</span>
-            <span class="btn-spinner" aria-hidden="true"></span>
-          </button>
-
-        </form>
-      </div>
-    </section>
-
-    <!-- ══════════════════════════════════════
-         SECCIÓN LISTA DE SOLICITUDES
-    ══════════════════════════════════════ -->
-    <section id="lista" class="section-list" aria-labelledby="list-title">
-      <div class="container">
-        <h2 id="list-title" class="section-title">Solicitudes recientes</h2>
-        <p class="section-sub">Lo que tus compañeros necesitan resolver.</p>
-
-        <!-- Estado de carga / vacío / error — manejado por app.js -->
         <div id="list-estado" class="list-estado" aria-live="polite"></div>
+        <div id="lista-solicitudes" class="cards-grid" aria-label="Lista de solicitudes"></div>
+      </section>
 
-        <!-- Contenedor de tarjetas — poblado por app.js -->
-        <div id="lista-solicitudes" class="cards-grid" aria-label="Lista de solicitudes de apoyo"></div>
-      </div>
-    </section>
+      <!-- ══ COLUMNA DERECHA — FORMULARIO STICKY ══ -->
+      <aside id="nueva-solicitud" class="col-form" aria-labelledby="form-title">
+        <div class="form-card">
+          <h2 id="form-title" class="form-card-title">
+            <svg class="icon-title" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg>
+            Nueva solicitud
+          </h2>
+          <p class="form-card-sub">¿Tienes una duda? Publícala y tus compañeros te ayudarán.</p>
+
+          <form id="form-solicitud" novalidate>
+
+            <div class="field-group">
+              <label for="nombre" class="field-label">Nombre <span class="required">*</span></label>
+              <input type="text" id="nombre" name="nombre" class="field-input" maxlength="50" placeholder="Tu nombre" autocomplete="given-name" required aria-required="true" aria-describedby="nombre-error" />
+              <span class="field-error" id="nombre-error" role="alert" aria-live="polite"></span>
+            </div>
+
+            <div class="field-group">
+              <label for="carrera" class="field-label">Carrera <span class="required">*</span></label>
+              <select id="carrera" name="carrera" class="field-input field-select" required aria-required="true" aria-describedby="carrera-error" aria-label="Selecciona tu carrera">
+                <option value="" disabled selected>Selecciona tu carrera</option>
+                <option value="IE">Ingeniería Eléctrica (IE)</option>
+                <option value="IM">Ingeniería Mecatrónica (IM)</option>
+                <option value="IS">Ingeniería de Software (IS)</option>
+                <option value="IME">Ingeniería Mecánica Eléctrica (IME)</option>
+              </select>
+              <span class="field-error" id="carrera-error" role="alert" aria-live="polite"></span>
+            </div>
+
+            <div class="field-group">
+              <label for="materia" class="field-label">Materia <span class="required">*</span></label>
+              <input type="text" id="materia" name="materia" class="field-input" maxlength="100" placeholder="Ej. Cálculo Diferencial" required aria-required="true" aria-describedby="materia-error" />
+              <span class="field-error" id="materia-error" role="alert" aria-live="polite"></span>
+            </div>
+
+            <div class="field-group">
+              <label for="descripcion" class="field-label">Descripción <span class="required">*</span></label>
+              <textarea id="descripcion" name="descripcion" class="field-input field-textarea" maxlength="500" rows="4" placeholder="Describe tu duda con detalle…" required aria-required="true" aria-describedby="descripcion-error descripcion-counter"></textarea>
+              <div class="field-footer">
+                <span class="field-error" id="descripcion-error" role="alert" aria-live="polite"></span>
+                <span class="char-counter" id="descripcion-counter" aria-live="polite">0 / 500</span>
+              </div>
+            </div>
+
+            <div id="form-feedback" class="form-feedback" role="alert" aria-live="polite"></div>
+
+            <button type="submit" id="btn-enviar" class="btn btn-submit">
+              <span class="btn-icon" aria-hidden="true">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+              </span>
+              <span class="btn-text">Publicar solicitud</span>
+              <span class="btn-spinner" aria-hidden="true"></span>
+            </button>
+
+          </form>
+        </div>
+
+        <!-- Tip card -->
+        <div class="tip-card">
+          <p class="tip-title">
+            <svg class="icon-tip" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+            Consejos para mejores respuestas
+          </p>
+          <ul class="tip-list">
+            <li>Menciona en qué parte específica tienes la duda</li>
+            <li>Indica si ya intentaste algo</li>
+            <li>Agrega el número de unidad o tema</li>
+          </ul>
+        </div>
+      </aside>
+
+    </div><!-- /main-layout -->
 
   </main>
 
-  <!-- ══════════════════════════════════════
-       FOOTER
-  ══════════════════════════════════════ -->
   <footer class="site-footer">
     <div class="container">
-      <p>EduLink v0.1 &mdash; Prototipo académico &middot; No ingresar datos personales reales.</p>
+      <p>EduLink v0.2 &mdash; Prototipo académico &middot; No ingresar datos personales reales.</p>
     </div>
   </footer>
 
