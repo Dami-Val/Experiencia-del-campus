@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EduLink — Apoyo Estudiantil</title>
+
+  <!-- Google Fonts: Sora (títulos) + Inter (cuerpo) + JetBrains Mono (badges) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Sora:wght@600;700;800&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@500&display=swap"
+    rel="stylesheet"
+  />
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════
+       HEADER
+  ══════════════════════════════════════ -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a href="#inicio" class="logo" aria-label="EduLink inicio">
+        <span class="logo-icon" aria-hidden="true">🎓</span>
+        <span class="logo-text">EduLink</span>
+      </a>
+      <nav class="site-nav" aria-label="Navegación principal">
+        <a href="#solicitar">Pedir ayuda</a>
+        <a href="#lista">Ver solicitudes</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN HERO / INICIO
+    ══════════════════════════════════════ -->
+    <section id="inicio" class="hero" aria-labelledby="hero-title">
+      <div class="container hero-content">
+        <p class="hero-eyebrow animate-fade-up">Espacio de apoyo estudiantil</p>
+        <h1 id="hero-title" class="animate-fade-up delay-1">
+          Aprende más<br />con tus compañeros
+        </h1>
+        <p class="hero-sub animate-fade-up delay-2">
+          Publica tu duda, encuentra a quien ya superó ese tema y resuelve
+          juntos. Sin grupos de chat caóticos.
+        </p>
+        <a href="#solicitar" class="btn btn-hero animate-fade-up delay-3">
+          Publicar solicitud
+        </a>
+      </div>
+      <div class="hero-decoration" aria-hidden="true">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN FORMULARIO
+    ══════════════════════════════════════ -->
+    <section id="solicitar" class="section-form" aria-labelledby="form-title">
+      <div class="container">
+        <h2 id="form-title" class="section-title">Nueva solicitud de apoyo</h2>
+        <p class="section-sub">Completa los campos y publica tu duda para que tus compañeros puedan ayudarte.</p>
+
+        <form id="form-solicitud" novalidate>
+
+          <!-- Nombre -->
+          <div class="field-group">
+            <label for="nombre" class="field-label">Nombre <span class="required" aria-hidden="true">*</span></label>
+            <input
+              type="text"
+              id="nombre"
+              name="nombre"
+              class="field-input"
+              maxlength="50"
+              placeholder="Tu nombre"
+              autocomplete="given-name"
+              required
+              aria-required="true"
+              aria-describedby="nombre-error"
+            />
+            <span class="field-error" id="nombre-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Carrera -->
+          <div class="field-group">
+            <label for="carrera" class="field-label">Carrera <span class="required" aria-hidden="true">*</span></label>
+            <select
+              id="carrera"
+              name="carrera"
+              class="field-input field-select"
+              required
+              aria-required="true"
+              aria-describedby="carrera-error"
+            >
+              <option value="" disabled selected>Selecciona tu carrera</option>
+              <option value="IE">Ingeniería Eléctrica (IE)</option>
+              <option value="IM">Ingeniería Mecatrónica (IM)</option>
+              <option value="IS">Ingeniería de Software (IS)</option>
+              <option value="IME">Ingeniería Mecánica Eléctrica (IME)</option>
+            </select>
+            <span class="field-error" id="carrera-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Materia -->
+          <div class="field-group">
+            <label for="materia" class="field-label">Materia <span class="required" aria-hidden="true">*</span></label>
+            <input
+              type="text"
+              id="materia"
+              name="materia"
+              class="field-input"
+              maxlength="100"
+              placeholder="Ej. Cálculo Diferencial"
+              required
+              aria-required="true"
+              aria-describedby="materia-error"
+            />
+            <span class="field-error" id="materia-error" role="alert" aria-live="polite"></span>
+          </div>
+
+          <!-- Descripción -->
+          <div class="field-group">
+            <label for="descripcion" class="field-label">Descripción <span class="required" aria-hidden="true">*</span></label>
+            <textarea
+              id="descripcion"
+              name="descripcion"
+              class="field-input field-textarea"
+              maxlength="500"
+              rows="4"
+              placeholder="Describe brevemente en qué necesitas ayuda…"
+              required
+              aria-required="true"
+              aria-describedby="descripcion-error descripcion-counter"
+            ></textarea>
+            <div class="field-footer">
+              <span class="field-error" id="descripcion-error" role="alert" aria-live="polite"></span>
+              <span class="char-counter" id="descripcion-counter" aria-live="polite">0 / 500</span>
+            </div>
+          </div>
+
+          <!-- Feedback global -->
+          <div id="form-feedback" class="form-feedback" role="alert" aria-live="polite"></div>
+
+          <!-- Botón -->
+          <button type="submit" id="btn-enviar" class="btn btn-submit">
+            <span class="btn-text">Publicar solicitud</span>
+            <span class="btn-spinner" aria-hidden="true"></span>
+          </button>
+
+        </form>
+      </div>
+    </section>
+
+    <!-- ══════════════════════════════════════
+         SECCIÓN LISTA DE SOLICITUDES
+    ══════════════════════════════════════ -->
+    <section id="lista" class="section-list" aria-labelledby="list-title">
+      <div class="container">
+        <h2 id="list-title" class="section-title">Solicitudes recientes</h2>
+        <p class="section-sub">Lo que tus compañeros necesitan resolver.</p>
+
+        <!-- Estado de carga / vacío / error — manejado por app.js -->
+        <div id="list-estado" class="list-estado" aria-live="polite"></div>
+
+        <!-- Contenedor de tarjetas — poblado por app.js -->
+        <div id="lista-solicitudes" class="cards-grid" aria-label="Lista de solicitudes de apoyo"></div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ══════════════════════════════════════
+       FOOTER
+  ══════════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>EduLink v0.1 &mdash; Prototipo académico &middot; No ingresar datos personales reales.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
